@@ -14,6 +14,10 @@ RESEND_API_KEY = "re_XXXXXXXX"
 APP_URL = "https://your-domain.pages.dev"
 RECEIPT_EMAIL_FROM = "noreply@afgarden.com"
 
+# Cron: auto-generate dues on 1st of every month at midnight UTC
+[triggers]
+crons = ["0 0 1 * *"]
+
 # For local dev
 [dev]
 port = 8788
