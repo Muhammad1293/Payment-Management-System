@@ -14,9 +14,6 @@ INSERT OR IGNORE INTO expense_categories (id, name) VALUES
   ('cat-salaries',    'Staff Salaries'),
   ('cat-misc',        'Miscellaneous');
 
--- Default Admin user
--- Email: admin@afgarden.com  |  Password: Admin@1234  (change immediately!)
--- Password hash below is bcrypt of "Admin@1234" with 10 rounds
 INSERT OR IGNORE INTO users (id, name, email, password, role) VALUES (
   'user-admin-001',
   'System Admin',
