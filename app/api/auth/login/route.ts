@@ -6,7 +6,6 @@ import { signToken, setAuthCookie } from '@/lib/auth';
 import { ok, badRequest, unauthorized, serverError } from '@/lib/api-response';
 import { NextResponse } from 'next/server';
 
-export const runtime = 'edge';
 
 export async function POST(req: NextRequest) {
   try {

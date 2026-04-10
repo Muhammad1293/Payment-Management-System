@@ -5,7 +5,7 @@ import { getCFEnv } from '@/lib/cf-env';
 import { dbFirst, dbAll } from '@/lib/db';
 import { ok, serverError } from '@/lib/api-response';
 
-export const runtime = 'edge';
+
 
 // GET /api/dashboard — overview stats for current month
 export async function GET(req: NextRequest) {

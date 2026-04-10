@@ -6,7 +6,7 @@ import { dbAll, dbFirst, dbRun, generateId, generateReceiptNumber } from '@/lib/
 import { ok, created, badRequest, notFound, serverError } from '@/lib/api-response';
 import { sendReceiptEmail } from '@/lib/email';
 
-export const runtime = 'edge';
+
 
 // GET /api/development/contributions?event_id=&resident_id=&status=
 export async function GET(req: NextRequest) {

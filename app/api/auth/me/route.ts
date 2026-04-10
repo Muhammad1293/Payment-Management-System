@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
 import { ok, unauthorized } from '@/lib/api-response';
 
-export const runtime = 'edge';
+
 
 export async function GET(req: NextRequest) {
   const user = await getAuthUser(req);

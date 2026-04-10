@@ -5,7 +5,7 @@ import { getCFEnv } from '@/lib/cf-env';
 import { dbAll, dbFirst, dbRun, dbBatch, generateId } from '@/lib/db';
 import { ok, created, badRequest, serverError } from '@/lib/api-response';
 
-export const runtime = 'edge';
+
 
 // GET /api/maintenance/dues?resident_id=&status=unpaid&year=&month=
 export async function GET(req: NextRequest) {

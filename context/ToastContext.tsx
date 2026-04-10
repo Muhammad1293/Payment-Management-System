@@ -40,7 +40,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             }}>
               {icons[t.type]}
             </span>
-            {message}
+            {t.message}
           </div>
         ))}
       </div>

@@ -5,15 +5,16 @@ import { getCFEnv } from '@/lib/cf-env';
 import { dbFirst, dbRun } from '@/lib/db';
 import { ok, badRequest, notFound, serverError } from '@/lib/api-response';
 
-export const runtime = 'edge';
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {  
+const { id } = await params;
   const auth = await requireAuth(req, 'admin', 'accountant');
   if ('status' in auth) return auth;
 
   try {
     const { DB } = getCFEnv();
-    const expense = await dbFirst(DB, `SELECT id FROM expenses WHERE id = ?`, [params.id]);
+    const expense = await dbFirst(DB, `SELECT id FROM expenses WHERE id = ?`, [id]);
     if (!expense) return notFound('Expense not found');
 
     const body = await req.json();
@@ -31,23 +32,24 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (fields.length === 0) return badRequest('Nothing to update');
     fields.push('updated_at = ?');
     values.push(new Date().toISOString());
-    values.push(params.id);
+    values.push(id);
 
     await dbRun(DB, `UPDATE expenses SET ${fields.join(', ')} WHERE id = ?`, values);
-    return ok({ id: params.id, updated: true });
+    return ok({ id: id, updated: true });
   } catch (err) {
     return serverError('Failed to update expense', err);
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {  
+const { id } = await params;
   const auth = await requireAuth(req, 'admin', 'accountant');
   if ('status' in auth) return auth;
 
   try {
     const { DB } = getCFEnv();
-    await dbRun(DB, `DELETE FROM expenses WHERE id = ?`, [params.id]);
-    return ok({ id: params.id, deleted: true });
+    await dbRun(DB, `DELETE FROM expenses WHERE id = ?`, [id]);
+    return ok({ id: id, deleted: true });
   } catch (err) {
     return serverError('Failed to delete expense', err);
   }

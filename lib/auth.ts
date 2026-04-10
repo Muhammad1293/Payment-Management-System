@@ -1,6 +1,5 @@
 // lib/auth.ts
 import { SignJWT, jwtVerify } from 'jose';
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export type UserRole = 'admin' | 'accountant' | 'supervisor';

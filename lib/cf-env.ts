@@ -1,8 +1,4 @@
 // lib/cf-env.ts
-// next-on-pages exposes CF bindings via getRequestContext()
-// Use this in every API route to get D1
-
-import { getRequestContext } from '@cloudflare/next-on-pages';
 import type { D1Database } from '@cloudflare/workers-types';
 
 export interface CFEnv {
@@ -14,17 +10,16 @@ export interface CFEnv {
 }
 
 export function getCFEnv(): CFEnv {
-  try {
-    const ctx = getRequestContext();
-    return ctx.env as unknown as CFEnv;
-  } catch {
-    // Local dev fallback (when not running through CF runtime)
-    return {
-      DB: (globalThis as any).DB,
-      JWT_SECRET: process.env.JWT_SECRET || 'dev-secret-32-chars-minimum-here!!',
-      RESEND_API_KEY: process.env.RESEND_API_KEY || '',
-      APP_URL: process.env.APP_URL || 'http://localhost:3000',
-      RECEIPT_EMAIL_FROM: process.env.RECEIPT_EMAIL_FROM || 'noreply@afgarden.com',
-    };
-  }
+  // OpenNext injects CF bindings into process.env and globalThis
+  const env = (globalThis as any).__env__ ||
+               (globalThis as any).env    ||
+               process.env;
+
+  return {
+    DB:                 env.DB                 as D1Database,
+    JWT_SECRET:         env.JWT_SECRET         || 'dev-secret-key-minimum-32-characters!!',
+    RESEND_API_KEY:     env.RESEND_API_KEY     || '',
+    APP_URL:            env.APP_URL             || '',
+    RECEIPT_EMAIL_FROM: env.RECEIPT_EMAIL_FROM || 'noreply@afgarden.com',
+  };
 }

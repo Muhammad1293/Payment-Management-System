@@ -9,7 +9,7 @@ import { getCFEnv } from '@/lib/cf-env';
 import { dbAll, dbFirst, dbRun, generateId } from '@/lib/db';
 import { ok, serverError } from '@/lib/api-response';
 
-export const runtime = 'edge';
+
 
 export async function POST(req: NextRequest) {
   // Simple security: check a secret header or bypass for cron

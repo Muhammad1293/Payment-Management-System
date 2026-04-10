@@ -6,7 +6,7 @@ import { dbAll, dbFirst, dbRun, dbBatch, generateId, generateReceiptNumber } fro
 import { ok, created, badRequest, notFound, serverError } from '@/lib/api-response';
 import { sendReceiptEmail } from '@/lib/email';
 
-export const runtime = 'edge';
+
 
 // GET /api/maintenance/payments?resident_id=&year=
 export async function GET(req: NextRequest) {

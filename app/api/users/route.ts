@@ -5,7 +5,7 @@ import { getCFEnv } from '@/lib/cf-env';
 import { dbAll, dbFirst, dbRun, generateId } from '@/lib/db';
 import { ok, created, badRequest, serverError, conflict } from '@/lib/api-response';
 
-export const runtime = 'edge';
+
 
 // GET /api/users — list all users (admin only)
 export async function GET(req: NextRequest) {

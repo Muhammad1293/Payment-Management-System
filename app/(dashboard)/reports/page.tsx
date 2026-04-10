@@ -196,9 +196,6 @@ function PendingDuesReport({ data }: { data: any }) {
   );
 }
 
-const MONTHS = ['', 'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'];
-
 function DevelopmentReport({ data }: { data: any }) {
   return (
     <div className="table-wrap">

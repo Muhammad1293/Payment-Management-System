@@ -5,22 +5,23 @@ import { getCFEnv } from '@/lib/cf-env';
 import { dbFirst, dbRun, dbAll } from '@/lib/db';
 import { ok, badRequest, notFound, serverError } from '@/lib/api-response';
 
-export const runtime = 'edge';
+
 
 // GET /api/houses/:id — full house detail + residents
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {  
+const { id } = await params;
   const auth = await requireAuth(req, 'admin', 'accountant', 'supervisor');
   if ('status' in auth) return auth;
 
   try {
     const { DB } = getCFEnv();
 
-    const house = await dbFirst(DB, `SELECT * FROM houses WHERE id = ?`, [params.id]);
+    const house = await dbFirst(DB, `SELECT * FROM houses WHERE id = ?`, [id]);
     if (!house) return notFound('House not found');
 
     const residents = await dbAll(DB,
       `SELECT * FROM residents WHERE house_id = ? ORDER BY floor_number, name`,
-      [params.id]
+      [id]
     );
 
     return ok({ ...house, residents });
@@ -30,13 +31,14 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 // PATCH /api/houses/:id
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {  
+const { id } = await params;
   const auth = await requireAuth(req, 'admin', 'accountant');
   if ('status' in auth) return auth;
 
   try {
     const { DB } = getCFEnv();
-    const house = await dbFirst(DB, `SELECT id FROM houses WHERE id = ?`, [params.id]);
+    const house = await dbFirst(DB, `SELECT id FROM houses WHERE id = ?`, [id]);
     if (!house) return notFound('House not found');
 
     const body = await req.json();
@@ -59,27 +61,28 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
     fields.push('updated_at = ?');
     values.push(new Date().toISOString());
-    values.push(params.id);
+    values.push(id);
 
     await dbRun(DB, `UPDATE houses SET ${fields.join(', ')} WHERE id = ?`, values);
-    return ok({ id: params.id, updated: true });
+    return ok({ id: id, updated: true });
   } catch (err) {
     return serverError('Failed to update house', err);
   }
 }
 
 // DELETE /api/houses/:id
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {  
+const { id } = await params;
   const auth = await requireAuth(req, 'admin');
   if ('status' in auth) return auth;
 
   try {
     const { DB } = getCFEnv();
-    const house = await dbFirst(DB, `SELECT id FROM houses WHERE id = ?`, [params.id]);
+    const house = await dbFirst(DB, `SELECT id FROM houses WHERE id = ?`, [id]);
     if (!house) return notFound('House not found');
 
-    await dbRun(DB, `DELETE FROM houses WHERE id = ?`, [params.id]);
-    return ok({ id: params.id, deleted: true });
+    await dbRun(DB, `DELETE FROM houses WHERE id = ?`, [id]);
+    return ok({ id: id, deleted: true });
   } catch (err) {
     return serverError('Failed to delete house', err);
   }

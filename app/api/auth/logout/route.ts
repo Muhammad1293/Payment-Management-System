@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { clearAuthCookie } from '@/lib/auth';
 import { ok } from '@/lib/api-response';
 
-export const runtime = 'edge';
+
 
 export async function POST(_req: NextRequest) {
   const res = ok({ message: 'Logged out' });

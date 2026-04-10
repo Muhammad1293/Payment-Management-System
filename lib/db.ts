@@ -2,7 +2,7 @@
 // Typed wrapper around Cloudflare D1
 // Usage: const db = getDB(request) — passes in the D1 binding from the CF env
 
-import { D1Database } from '@cloudflare/workers-types';
+import { D1Database, D1Result } from '@cloudflare/workers-types';
 
 declare global {
   // Augmented to carry CF bindings (set by next-on-pages / CF Pages runtime)
