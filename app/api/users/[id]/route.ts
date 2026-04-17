@@ -13,7 +13,7 @@ const { id } = await params;
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const user = await dbFirst(DB,
       `SELECT id, name, email, role, is_active, created_at FROM users WHERE id = ?`,
       [id]
@@ -31,9 +31,9 @@ const { id } = await params;
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const body = await req.json();
-    const { name, role, is_active } = body;
+    const { name, email, role, is_active } = body;
 
     const user = await dbFirst(DB, `SELECT id FROM users WHERE id = ?`, [id]);
     if (!user) return notFound('User not found');
@@ -43,6 +43,7 @@ const { id } = await params;
     const values: unknown[] = [];
 
     if (name !== undefined)      { fields.push('name = ?');      values.push(name); }
+    if (email !== undefined)     { fields.push('email = ?'); values.push(email); }
     if (role !== undefined)      { fields.push('role = ?');      values.push(role); }
     if (is_active !== undefined) { fields.push('is_active = ?'); values.push(is_active ? 1 : 0); }
 
@@ -67,7 +68,7 @@ const { id } = await params;
 
   // Soft-delete: deactivate
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const user = await dbFirst(DB, `SELECT id FROM users WHERE id = ?`, [id]);
     if (!user) return notFound('User not found');
 

@@ -5,7 +5,7 @@ import { verifyToken } from '@/lib/auth';
 export const config = {
   matcher: [
     // Protect all pages except login
-    '/((?!api/auth/login|_next/static|_next/image|favicon.ico|login).*)',
+    '/((?!api/auth/login|api/debug|_next/static|_next/image|favicon.ico|login).*)',
   ],
 };
 

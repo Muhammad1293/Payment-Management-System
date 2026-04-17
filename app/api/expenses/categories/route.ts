@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const cats = await dbAll(DB, `SELECT * FROM expense_categories ORDER BY name`);
     return ok(cats);
   } catch (err) {
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     const { name } = await req.json();
     if (!name) return badRequest('name is required');
 
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const id = generateId();
     await dbRun(DB, `INSERT INTO expense_categories (id, name) VALUES (?, ?)`, [id, name]);
     return created({ id, name });

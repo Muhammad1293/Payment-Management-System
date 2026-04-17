@@ -53,6 +53,14 @@
         "nxtPid": "nxtPid"
       },
       "namedRegex": "^/api/users/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/users/[id]/reset-password",
+      "regex": "^/api/users/([^/]+?)/reset\\-password(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/users/(?<nxtPid>[^/]+?)/reset\\-password(?:/)?$"
     }
   ],
   "staticRoutes": [

@@ -13,7 +13,7 @@ import { ok, serverError } from '@/lib/api-response';
 
 export async function POST(req: NextRequest) {
   // Simple security: check a secret header or bypass for cron
-  const { DB } = getCFEnv();
+  const { DB } = await getCFEnv();
 
   const now   = new Date();
   const month = now.getMonth() + 1;

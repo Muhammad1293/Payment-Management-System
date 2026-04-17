@@ -12,14 +12,14 @@
       "entrypoint": "server/edge/chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_09_s2fq.js",
       "matchers": [
         {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/((?!api\\/auth\\/login|_next\\/static|_next\\/image|favicon.ico|login).*))(\\\\.json)?[\\/#\\?]?$",
-          "originalSource": "/((?!api/auth/login|_next/static|_next/image|favicon.ico|login).*)"
+          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/((?!api\\/auth\\/login|api\\/debug|_next\\/static|_next\\/image|favicon.ico|login).*))(\\\\.json)?[\\/#\\?]?$",
+          "originalSource": "/((?!api/auth/login|api/debug|_next/static|_next/image|favicon.ico|login).*)"
         }
       ],
       "wasm": [],
       "assets": [],
       "env": {
-        "__NEXT_BUILD_ID": "5WkHjgGHqNnL6WrCAy_lO",
+        "__NEXT_BUILD_ID": "lnRzAazNfim3rT-oNvMMN",
         "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "Sik/8mYOvT1BeDtvdiqkdfifOcpkKpUnwwb86/mKNVE=",
         "__NEXT_PREVIEW_MODE_ID": "5881a938b393fc8a6970c6ede11ffb30",
         "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "66f9de353ada3643fa392c93b477940d92673255d508710562f4d15445c64905",

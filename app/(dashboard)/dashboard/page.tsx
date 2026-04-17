@@ -102,7 +102,7 @@ export default function DashboardPage() {
                 <table className="data-table">
                   <thead>
                     <tr>
-                      <th>Receipt</th><th>Resident</th><th>House</th>
+                      <th>Receipt</th><th>Resident</th><th>House No</th>
                       <th>Amount</th><th>Date</th>
                     </tr>
                   </thead>
@@ -111,7 +111,7 @@ export default function DashboardPage() {
                       <tr key={i}>
                         <td><span className="mono" style={{ color: 'var(--accent)', fontSize: 12 }}>{p.receipt_number}</span></td>
                         <td>{p.resident_name}</td>
-                        <td><span className="badge badge-blue">H-{p.house_number}</span></td>
+                        <td><span className="badge badge-blue">{p.house_number}</span></td>
                         <td style={{ fontWeight: 600 }}>{fmt(p.total_amount)}</td>
                         <td style={{ color: 'var(--text-secondary)', fontSize: 13 }}>
                           {new Date(p.payment_date).toLocaleDateString('en-PK', { day: '2-digit', month: 'short', year: 'numeric' })}

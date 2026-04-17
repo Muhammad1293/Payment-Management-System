@@ -101,8 +101,8 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
             </svg>
           </div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.2 }}>AF Garden</div>
-            <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Society PMS</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.2 }}>AF Garden Welfare Association</div>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Payment Management System (PMS)</div>
           </div>
         </div>
       </div>

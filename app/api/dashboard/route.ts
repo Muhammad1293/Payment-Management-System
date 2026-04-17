@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const now   = new Date();
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const year  = String(now.getFullYear());

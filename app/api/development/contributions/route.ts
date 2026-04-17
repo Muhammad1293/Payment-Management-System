@@ -8,13 +8,14 @@ import { sendReceiptEmail } from '@/lib/email';
 
 
 
+
 // GET /api/development/contributions?event_id=&resident_id=&status=
 export async function GET(req: NextRequest) {
   const auth = await requireAuth(req, 'admin', 'accountant', 'supervisor');
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const { searchParams } = new URL(req.url);
     const eventId    = searchParams.get('event_id');
     const residentId = searchParams.get('resident_id');
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest) {
     const { contribution_id, notes } = await req.json();
     if (!contribution_id) return badRequest('contribution_id is required');
 
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
 
     const contribution = await dbFirst<{
       id: string; event_id: string; resident_id: string; house_id: string;

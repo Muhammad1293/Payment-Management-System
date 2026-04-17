@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const { searchParams } = new URL(req.url);
     const type  = searchParams.get('type');
     const month = searchParams.get('month');

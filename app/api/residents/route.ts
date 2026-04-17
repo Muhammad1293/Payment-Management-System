@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const { searchParams } = new URL(req.url);
     const houseId = searchParams.get('house_id');
     const status  = searchParams.get('status');
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
       return badRequest('resident_type must be owner or tenant');
     }
 
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
 
     const house = await dbFirst(DB, `SELECT id FROM houses WHERE id = ?`, [house_id]);
     if (!house) return notFound('House not found');

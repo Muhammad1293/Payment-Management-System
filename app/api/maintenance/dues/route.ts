@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const { searchParams } = new URL(req.url);
     const residentId = searchParams.get('resident_id');
     const status     = searchParams.get('status');
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       return badRequest('Valid month (1-12) and year are required');
     }
 
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
 
     // Fetch all active residents
     const residents = await dbAll<{

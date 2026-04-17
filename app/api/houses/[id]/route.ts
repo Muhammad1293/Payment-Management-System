@@ -14,7 +14,7 @@ const { id } = await params;
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
 
     const house = await dbFirst(DB, `SELECT * FROM houses WHERE id = ?`, [id]);
     if (!house) return notFound('House not found');
@@ -37,7 +37,7 @@ const { id } = await params;
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const house = await dbFirst(DB, `SELECT id FROM houses WHERE id = ?`, [id]);
     if (!house) return notFound('House not found');
 
@@ -77,7 +77,7 @@ const { id } = await params;
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const house = await dbFirst(DB, `SELECT id FROM houses WHERE id = ?`, [id]);
     if (!house) return notFound('House not found');
 

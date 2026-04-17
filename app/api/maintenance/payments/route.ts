@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const { searchParams } = new URL(req.url);
     const residentId = searchParams.get('resident_id');
     const year = searchParams.get('year');
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
       return badRequest('resident_id and due_ids[] are required');
     }
 
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
 
     // Validate resident
     const resident = await dbFirst<{
@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
 
     // 5. Send email (non-blocking)
     if (resident.email) {
-      sendReceiptEmail({
+     await sendReceiptEmail({
         to: resident.email,
         residentName: resident.name,
         receiptNumber,
@@ -122,7 +122,9 @@ export async function POST(req: NextRequest) {
         amount: totalAmount,
         date: now,
         months: dues.map(d => ({ month: d.month, year: d.year })),
-      }).catch(console.error);
+      }).catch((err) => {
+  console.error('[EMAIL FAILED]', err?.message, err);
+});
     }
 
     return created({

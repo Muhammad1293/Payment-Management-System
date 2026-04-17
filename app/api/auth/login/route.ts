@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       return badRequest('Email and password are required');
     }
 
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
 
     const user = await dbFirst<{
       id: string; name: string; email: string;

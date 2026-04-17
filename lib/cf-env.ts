@@ -1,5 +1,5 @@
-// lib/cf-env.ts
 import type { D1Database } from '@cloudflare/workers-types';
+import { getCloudflareContext } from '@opennextjs/cloudflare';
 
 export interface CFEnv {
   DB: D1Database;
@@ -9,14 +9,16 @@ export interface CFEnv {
   RECEIPT_EMAIL_FROM: string;
 }
 
-export function getCFEnv(): CFEnv {
-  // OpenNext injects CF bindings into process.env and globalThis
-  const env = (globalThis as any).__env__ ||
-               (globalThis as any).env    ||
-               process.env;
+export async function getCFEnv(): Promise<CFEnv> {
+  const ctx = await getCloudflareContext({ async: true });
+  const env = ctx.env as any;
+
+  if (!env.DB) {
+    throw new Error('D1 DB binding not found. Check wrangler.toml [[d1_databases]]');
+  }
 
   return {
-    DB:                 env.DB                 as D1Database,
+    DB:                 env.DB,
     JWT_SECRET:         env.JWT_SECRET         || 'dev-secret-key-minimum-32-characters!!',
     RESEND_API_KEY:     env.RESEND_API_KEY     || '',
     APP_URL:            env.APP_URL             || '',

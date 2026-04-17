@@ -30,6 +30,7 @@
   "/api/reports/route": "/api/reports",
   "/api/residents/[id]/route": "/api/residents/[id]",
   "/api/residents/route": "/api/residents",
+  "/api/users/[id]/reset-password/route": "/api/users/[id]/reset-password",
   "/api/users/[id]/route": "/api/users/[id]",
   "/api/users/route": "/api/users",
   "/favicon.ico/route": "/favicon.ico",

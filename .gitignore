@@ -1,40 +1,62 @@
-# dependencies
-/node_modules
-/.pnp
+# =====================
+# Dependencies
+# =====================
+node_modules/
+.pnp/
 .pnp.js
-.yarn/install-state.gz
+.yarn/
 
-# testing
-/coverage
+# =====================
+# Build outputs
+# =====================
+.next/
+out/
+build/
+dist/
 
-# next.js
-/.next/
-/out/
+# =====================
+# Testing
+# =====================
+coverage/
 
-# production
-/build
+# =====================
+# Environment / Secrets (IMPORTANT)
+# =====================
+.env
+.env.*
+!.env.example
 
-# misc
-.DS_Store
-*.pem
+.dev.vars
+.dev.vars.*
 
-# debug
+# =====================
+# Cloudflare Wrangler (local only)
+# =====================
+.wrangler/
+.wrangler/state/
+.wrangler/logs/
+wrangler.toml
+wrangler.json
+wrangler.jsonc
+
+# =====================
+# Logs
+# =====================
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*
-!.env.example    # optional: track example
+# =====================
+# OS / Editor
+# =====================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
 
-# vercel
-.vercel
-
-# typescript
+# =====================
+# TypeScript
+# =====================
 *.tsbuildinfo
 next-env.d.ts
-
-# Cloudflare Wrangler
-.wrangler/
-.wrangler/state/
-.wrangler/logs/

@@ -30,6 +30,7 @@
   "/api/reports/route": "app/api/reports/route.js",
   "/api/residents/[id]/route": "app/api/residents/[id]/route.js",
   "/api/residents/route": "app/api/residents/route.js",
+  "/api/users/[id]/reset-password/route": "app/api/users/[id]/reset-password/route.js",
   "/api/users/[id]/route": "app/api/users/[id]/route.js",
   "/api/users/route": "app/api/users/route.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",

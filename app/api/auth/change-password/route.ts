@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       return badRequest('New password must be at least 8 characters');
     }
 
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const user = await dbFirst<{ password: string }>(
       DB, `SELECT password FROM users WHERE id = ?`, [auth.user.sub]
     );

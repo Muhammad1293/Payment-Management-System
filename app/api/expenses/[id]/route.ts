@@ -13,7 +13,7 @@ const { id } = await params;
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const expense = await dbFirst(DB, `SELECT id FROM expenses WHERE id = ?`, [id]);
     if (!expense) return notFound('Expense not found');
 
@@ -47,7 +47,7 @@ const { id } = await params;
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     await dbRun(DB, `DELETE FROM expenses WHERE id = ?`, [id]);
     return ok({ id: id, deleted: true });
   } catch (err) {

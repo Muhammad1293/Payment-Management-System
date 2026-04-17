@@ -4,6 +4,8 @@ import { requireAuth } from '@/lib/auth';
 import { getCFEnv } from '@/lib/cf-env';
 import { dbAll, dbFirst, dbRun, generateId } from '@/lib/db';
 import { ok, created, badRequest, serverError, conflict } from '@/lib/api-response';
+import { hash } from 'bcryptjs';
+import { sendUserCredentials } from '@/lib/email';
 
 
 
@@ -13,7 +15,7 @@ export async function GET(req: NextRequest) {
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const users = await dbAll(DB,
       `SELECT id, name, email, role, is_active, created_at FROM users ORDER BY created_at DESC`
     );
@@ -23,34 +25,53 @@ export async function GET(req: NextRequest) {
   }
 }
 
+function generatePassword(): string {
+  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#$!';
+  let password = '';
+  for (let i = 0; i < 10; i++) {
+    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return password;
+}
+
 // POST /api/users — create user (admin only)
 export async function POST(req: NextRequest) {
   const auth = await requireAuth(req, 'admin');
   if ('status' in auth) return auth;
 
   try {
-    const { name, email, password, role } = await req.json();
+    const { name, email, role } = await req.json();
 
-    if (!name || !email || !password || !role) {
-      return badRequest('name, email, password, role are required');
+    if (!name || !email || !role) {
+      return badRequest('name, email, role are required');
     }
     if (!['admin', 'accountant', 'supervisor'].includes(role)) {
       return badRequest('Invalid role');
     }
 
-    const { DB } = getCFEnv();
+    const { DB, APP_URL } = await getCFEnv();
 
     const existing = await dbFirst(DB, 'SELECT id FROM users WHERE email = ?', [email.toLowerCase()]);
     if (existing) return conflict('Email already exists');
 
-    const { hash } = await import('bcryptjs');
-    const hashed = await hash(password, 10);
+    // Auto-generate password
+    const plainPassword = generatePassword();
+    const hashed = await hash(plainPassword, 10);
     const id = generateId();
 
     await dbRun(DB,
       `INSERT INTO users (id, name, email, password, role) VALUES (?, ?, ?, ?, ?)`,
       [id, name, email.toLowerCase(), hashed, role]
     );
+
+    // Send credentials email (non-blocking)
+    sendUserCredentials({
+      to: email,
+      name,
+      password: plainPassword,
+      role,
+      appUrl: APP_URL || 'https://pms.afgarden.workers.dev',
+    }).catch(err => console.error('[EMAIL FAILED]', err?.message));
 
     return created({ id, name, email: email.toLowerCase(), role });
   } catch (err) {

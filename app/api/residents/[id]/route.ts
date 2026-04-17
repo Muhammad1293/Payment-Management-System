@@ -13,7 +13,7 @@ const { id } = await params;
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const resident = await dbFirst(DB, `
       SELECT r.*, h.house_number
       FROM residents r JOIN houses h ON h.id = r.house_id
@@ -32,7 +32,7 @@ const { id } = await params;
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const resident = await dbFirst(DB, `SELECT id FROM residents WHERE id = ?`, [id]);
     if (!resident) return notFound('Resident not found');
 
@@ -67,7 +67,7 @@ const { id } = await params;
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     await dbRun(DB, `DELETE FROM residents WHERE id = ?`, [id]);
     return ok({ id: id, deleted: true });
   } catch (err) {

@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const events = await dbAll(DB, `
       SELECT
         de.*,
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
       return badRequest('title, contribution_amount, event_date are required');
     }
 
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const id = generateId();
 
     await dbRun(DB, `

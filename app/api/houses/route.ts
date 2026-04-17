@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   if ('status' in auth) return auth;
 
   try {
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
     const houses = await dbAll(DB, `
       SELECT
         h.*,
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
 
     if (!house_number) return badRequest('house_number is required');
 
-    const { DB } = getCFEnv();
+    const { DB } = await getCFEnv();
 
     const existing = await dbFirst(DB, `SELECT id FROM houses WHERE house_number = ?`, [house_number]);
     if (existing) return conflict(`House ${house_number} already exists`);
