@@ -4,11 +4,20 @@ import { useEffect, useState } from 'react';
 import { useToast } from '@/context/ToastContext';
 
 interface House {
-  id: string; house_number: string; num_floors: number;
-  dev_charge_status: 'paid'|'unpaid'; elec_charge_status: 'paid'|'unpaid';
-  gas_charge_status: 'paid'|'unpaid';
-  dev_charge_amount: number; elec_charge_amount: number; gas_charge_amount: number;
-  total_residents: number; active_residents: number;
+  id: string;
+  house_number: string;
+  owner_name?: string;
+
+  dev_charge_status: 'paid' | 'unpaid';
+  elec_charge_status: 'paid' | 'unpaid';
+  gas_charge_status: 'paid' | 'unpaid';
+
+  dev_charge_amount: number;
+  elec_charge_amount: number;
+  gas_charge_amount: number;
+
+  total_residents: number;
+  active_residents: number;
 }
 
 export default function HousesPage() {
@@ -72,7 +81,7 @@ export default function HousesPage() {
                   </div>
                   <div>
                     <div style={{ fontWeight: 700, fontSize: 16 }}>House {h.house_number}</div>
-                    <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{h.num_floors} floor{h.num_floors > 1 ? 's' : ''}</div>
+                   <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{h.owner_name || 'No owner assigned'}</div>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: 6 }}>
@@ -128,7 +137,7 @@ function HouseModal({ house, onClose, onSaved }: {
 }) {
   const [form, setForm] = useState({
     house_number: house?.house_number || '',
-    num_floors:   house?.num_floors || 1,
+    owner_name:   house?.owner_name   || '',
     dev_charge_status:  house?.dev_charge_status  || 'unpaid',
     elec_charge_status: house?.elec_charge_status || 'unpaid',
     gas_charge_status:  house?.gas_charge_status  || 'unpaid',
@@ -166,12 +175,12 @@ function HouseModal({ house, onClose, onSaved }: {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div className="form-group" style={{ gridColumn: '1' }}>
               <label className="label">House Number *</label>
-              <input className="input" value={form.house_number} onChange={e => set('house_number', e.target.value)} placeholder="e.g. A-01" />
+             <input className="input" value={form.house_number} onChange={e => set('house_number', e.target.value.toUpperCase())} placeholder="e.g. A-01" />
             </div>
-            <div className="form-group">
-              <label className="label">Floors</label>
-              <input type="number" className="input" min={1} value={form.num_floors} onChange={e => set('num_floors', parseInt(e.target.value))} />
-            </div>
+           <div className="form-group">
+  <label className="label">Owner Name</label>
+  <input className="input" value={form.owner_name} onChange={e => set('owner_name', e.target.value)} placeholder="e.g. Muhammad Ahmed" />
+</div>
           </div>
 
           <div style={{ borderTop: '1px solid var(--border)', paddingTop: 16 }}>

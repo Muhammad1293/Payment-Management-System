@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS houses (
   id           TEXT    PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
   house_number TEXT    NOT NULL UNIQUE,
-  num_floors   INTEGER NOT NULL DEFAULT 1,
+  owner_name   TEXT,
   -- one-time house-level charges
   dev_charge_status   TEXT NOT NULL DEFAULT 'unpaid' CHECK (dev_charge_status   IN ('paid','unpaid')),
   elec_charge_status  TEXT NOT NULL DEFAULT 'unpaid' CHECK (elec_charge_status  IN ('paid','unpaid')),
