@@ -56,9 +56,9 @@ export default function LoginPage() {
             </svg>
           </div>
           <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)' }}>
-            AF Garden Society
+            AF Garden Society Welfare Association
           </h1>
-          <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
+          <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginTop: 4 }}>
             Payment Management System
           </p>
         </div>
@@ -114,8 +114,8 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--text-muted)', marginTop: 24 }}>
-          Internal system — authorized personnel only
+        <p style={{ textAlign: 'center', fontSize: 15, color: 'var(--text-muted)', marginTop: 24 }}>
+          Internal system - authorized personnel only
         </p>
       </div>
     </div>

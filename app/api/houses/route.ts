@@ -37,9 +37,18 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-   const house_number = String(body.house_number || '').toUpperCase().trim();
+
+const house_number = String(body.house_number || '').toUpperCase().trim();
 const owner_name = body.owner_name?.trim();
-const notes = body.notes;
+const notes = body.notes ?? null;
+
+const dev_charge_status = body.dev_charge_status || 'unpaid';
+const elec_charge_status = body.elec_charge_status || 'unpaid';
+const gas_charge_status = body.gas_charge_status || 'unpaid';
+
+const dev_charge_amount = Number(body.dev_charge_amount || 0);
+const elec_charge_amount = Number(body.elec_charge_amount || 0);
+const gas_charge_amount = Number(body.gas_charge_amount || 0);
 
     if (!house_number) return badRequest('house_number is required');
 
@@ -49,10 +58,32 @@ const notes = body.notes;
     if (existing) return conflict(`House ${house_number} already exists`);
 
     const id = generateId();
-    await dbRun(DB,
-  `INSERT INTO houses (id, house_number, owner_name, notes) VALUES (?, ?, ?, ?)`,
-  [id, house_number, owner_name ?? null, notes ?? null]
-);
+   await dbRun(DB, `
+INSERT INTO houses (
+  id,
+  house_number,
+  owner_name,
+  notes,
+  dev_charge_status,
+  elec_charge_status,
+  gas_charge_status,
+  dev_charge_amount,
+  elec_charge_amount,
+  gas_charge_amount
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`, [
+  id,
+  house_number,
+  owner_name,
+  notes,
+  dev_charge_status,
+  elec_charge_status,
+  gas_charge_status,
+  dev_charge_amount,
+  elec_charge_amount,
+  gas_charge_amount
+]);
 
     return created({ id, house_number, owner_name });
   } catch (err) {

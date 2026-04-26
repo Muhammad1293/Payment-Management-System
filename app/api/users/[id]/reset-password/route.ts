@@ -36,14 +36,23 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     );
 
     const { APP_URL } = await getCFEnv();
-    sendPasswordReset({
-      to: user.email,
-      name: user.name,
-      newPassword: plainPassword,
-      appUrl: APP_URL || 'https://pms.afgarden.workers.dev',
-    }).catch(err => console.error('[EMAIL FAILED]', err?.message));
+   try {
+  await sendPasswordReset({
+    to: user.email,
+    name: user.name,
+    newPassword: plainPassword,
+    appUrl: APP_URL || 'https://pms.afgarden.workers.dev',
+  });
 
-    return ok({ message: 'Password reset and sent to user email' });
+  return ok({ message: 'Password reset and email sent successfully' });
+
+} catch (err: any) {
+  console.error('[EMAIL FAILED]', err?.message || err);
+
+  return ok({
+    message: 'Password reset successfully, but email could not be sent'
+  });
+}
   } catch (err) {
     return serverError('Failed to reset password', err);
   }

@@ -5,37 +5,83 @@ async function getConfig() {
   const ctx = await getCloudflareContext({ async: true });
   const env = ctx.env as any;
   return {
-    apiKey:      env.BREVO_API_KEY  || '',
-    senderEmail: env.SENDER_EMAIL   || '',
-    senderName:  env.SENDER_NAME    || 'AF Garden Society Welfare Association',
+    clientId:     env.GOOGLE_CLIENT_ID     || '',
+    clientSecret: env.GOOGLE_CLIENT_SECRET || '',
+    refreshToken: env.GOOGLE_REFRESH_TOKEN || '',
+    senderEmail:  env.SENDER_EMAIL          || '',
+    senderName:   env.SENDER_NAME           || 'AF Garden Residents Welfare Association',
   };
 }
 
-async function sendEmail(to: string, toName: string, subject: string, html: string): Promise<void> {
-  const { apiKey, senderEmail, senderName } = await getConfig();
+async function getAccessToken(clientId:string, clientSecret:string, refreshToken:string) {
+  const body = new URLSearchParams({
+    client_id: clientId,
+    client_secret: clientSecret,
+    refresh_token: refreshToken,
+    grant_type: 'refresh_token',
+  });
 
-  if (!apiKey) {
-    console.warn('[Email] BREVO_API_KEY not set');
+  const res = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body,
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(JSON.stringify(data));
+  }
+
+  return data.access_token;
+}
+
+async function sendEmail(to: string, toName: string, subject: string, html: string): Promise<void> {
+  const { clientId, clientSecret, refreshToken, senderEmail, senderName } = await getConfig();
+
+  if (!refreshToken) {
+    console.warn('[Email] Google Refresh Token not set');
     return;
   }
 
-  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+  // 1. Get fresh token
+  const accessToken = await getAccessToken(clientId, clientSecret, refreshToken);
+
+  // 2. Format the email for Gmail
+  const utf8Subject = `=?utf-8?B?${Buffer.from(subject).toString('base64')}?=`;
+  const messageParts = [
+    `From: "${senderName}" <${senderEmail}>`,
+    `To: "${toName}" <${to}>`,
+    `Content-Type: text/html; charset=utf-8`,
+    `MIME-Version: 1.0`,
+    `Subject: ${utf8Subject}`,
+    ``,
+    html,
+  ];
+  const message = messageParts.join('\n');
+
+  // 3. Base64URL Encode (required by Google API)
+  const encodedMessage = Buffer.from(message)
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+
+  // 4. Send
+  const res = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
     method: 'POST',
     headers: {
-      'Content-Type':  'application/json',
-      'api-key':        apiKey,
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      sender:     { name: senderName, email: senderEmail },
-      to:         [{ email: to, name: toName }],
-      subject,
-      htmlContent: html,
-    }),
+    body: JSON.stringify({ raw: encodedMessage }),
   });
 
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`Brevo error: ${err}`);
+    throw new Error(`Gmail API error: ${err}`);
   }
 }
 
@@ -67,12 +113,12 @@ export async function sendUserCredentials(payload: {
 </head>
 <body>
   <div class="header">
-    <h1 style="margin:0;font-size:22px;">AF Garden Society Welfare Association</h1>
+    <h1 style="margin:0;font-size:22px;">AF Garden Residents Welfare Association</h1>
     <p style="margin:4px 0 0;opacity:0.8;">Payment Management System</p>
   </div>
   <div class="body">
     <p>Dear <strong>${name}</strong>,</p>
-    <p>Your account has been created on the AF Garden Society Payment Management System. Here are your login credentials:</p>
+    <p>Your account has been created on the AF Garden Payment Management System. Here are your login credentials:</p>
 
     <div class="cred-box">
       <p>🌐 <strong>Login URL:</strong><br/><span class="value">${appUrl}</span></p>
@@ -88,13 +134,13 @@ export async function sendUserCredentials(payload: {
     </div>
   </div>
   <div class="footer">
-    AF Garden Society Welfare Association &bull; Payment Management System<br/>
+    AF Garden Residents Welfare Association &bull; Payment Management System<br/>
     This is an automated email, please do not reply.
   </div>
 </body>
 </html>`;
 
-  await sendEmail(to, name, `Your PMS Account Credentials – AF Garden Society Welfare Association`, html);
+  await sendEmail(to, name, `Your PMS Account Credentials – AF Garden Residents Welfare Association`, html);
 }
 
 // ── Send password reset email ────────────────────────────────────
@@ -123,7 +169,7 @@ export async function sendPasswordReset(payload: {
 </head>
 <body>
   <div class="header">
-    <h1 style="margin:0;font-size:22px;">AF Garden Society Welfare Association</h1>
+    <h1 style="margin:0;font-size:22px;">AF Garden Residents Welfare Association</h1>
     <p style="margin:4px 0 0;opacity:0.8;">Password Reset</p>
   </div>
   <div class="body">
@@ -142,7 +188,7 @@ export async function sendPasswordReset(payload: {
     </div>
   </div>
   <div class="footer">
-    AF Garden Society Welfare Association &bull; Payment Management System<br/>
+    AF Garden Residents Welfare Association &bull; Payment Management System<br/>
     This is an automated email, please do not reply.
   </div>
 </body>
@@ -241,7 +287,7 @@ table{
 
 <div class="header">
   <h2 style="margin:0;">Payment Receipt</h2>
-  <p style="margin:6px 0 0;opacity:.85;">AF Garden Society Welfare Association</p>
+  <p style="margin:6px 0 0;opacity:.85;">AF Garden Residents Welfare Association</p>
 </div>
 
 <div class="body">
@@ -289,7 +335,7 @@ ${paidMonthsHtml}
 </div>
 
 <div class="footer">
-AF Garden Society Welfare Association<br/>
+AF Garden Residents Welfare Association<br/>
 This is an automated email. Please do not reply.
 </div>
 

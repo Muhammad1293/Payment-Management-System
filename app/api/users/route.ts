@@ -65,13 +65,19 @@ export async function POST(req: NextRequest) {
     );
 
     // Send credentials email (non-blocking)
-    sendUserCredentials({
-      to: email,
-      name,
-      password: plainPassword,
-      role,
-      appUrl: APP_URL || 'https://pms.afgarden.workers.dev',
-    }).catch(err => console.error('[EMAIL FAILED]', err?.message));
+   try {
+  await sendUserCredentials({
+    to: email,
+    name,
+    password: plainPassword,
+    role,
+    appUrl: APP_URL,
+  });
+
+  console.log("EMAIL SENT");
+} catch (err:any) {
+  console.error("EMAIL FAILED:", err?.message || err);
+}
 
     return created({ id, name, email: email.toLowerCase(), role });
   } catch (err) {

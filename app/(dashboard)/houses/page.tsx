@@ -26,6 +26,7 @@ export default function HousesPage() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editHouse, setEditHouse] = useState<House | null>(null);
+  const [search, setSearch] = useState('');
 
   const load = () => {
     setLoading(true);
@@ -33,6 +34,12 @@ export default function HousesPage() {
   };
 
   useEffect(() => { load(); }, []);
+
+  const filtered = houses.filter(h =>
+  !search ||
+  h.house_number.toLowerCase().includes(search.toLowerCase()) ||
+  h.owner_name?.toLowerCase().includes(search.toLowerCase())
+);
 
   const deleteHouse = async (id: string, num: string) => {
     if (!confirm(`Delete house ${num}? This will remove all residents and data.`)) return;
@@ -55,7 +62,7 @@ export default function HousesPage() {
       <div className="page-header">
         <div>
           <h1 className="page-title">Houses</h1>
-          <p className="page-sub">{houses.length} houses registered</p>
+        <p className="page-sub">{filtered.length} Houses found</p>
         </div>
         <button className="btn btn-primary" onClick={() => { setEditHouse(null); setShowModal(true); }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -63,11 +70,22 @@ export default function HousesPage() {
         </button>
       </div>
 
-      {loading ? (
+{/* Search */}
+<div style={{ marginBottom: 18 }}>
+  <input
+    className="input"
+    placeholder="Search house no or owner..."
+    value={search}
+    onChange={e => setSearch(e.target.value)}
+    style={{ maxWidth: 280 }}
+  />
+</div>
+
+{loading ? (
         <div style={{ color: 'var(--text-muted)', textAlign: 'center', padding: 60 }}>Loading…</div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 16 }}>
-          {houses.map(h => (
+          {filtered.map(h => (
             <div key={h.id} className="card" style={{ padding: 20 }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -79,10 +97,23 @@ export default function HousesPage() {
                   }}>
                     {h.house_number}
                   </div>
-                  <div>
-                    <div style={{ fontWeight: 700, fontSize: 16 }}>House {h.house_number}</div>
-                   <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{h.owner_name || 'No owner assigned'}</div>
-                  </div>
+                 <div>
+  <div style={{ fontWeight: 700, fontSize: 16 }}>
+    House {h.house_number}
+  </div>
+
+  <div
+    style={{
+      fontSize: 14,
+      fontWeight: 600,
+      color: h.owner_name ? 'var(--text-primary)' : 'var(--text-muted)',
+      marginTop: 3,
+      lineHeight: 1.25
+    }}
+  >
+    {h.owner_name || 'No owner assigned'}
+  </div>
+</div>
                 </div>
                 <div style={{ display: 'flex', gap: 6 }}>
                   <button className="btn btn-ghost btn-sm" onClick={() => { setEditHouse(h); setShowModal(true); }}>Edit</button>
@@ -113,7 +144,7 @@ export default function HousesPage() {
               </div>
             </div>
           ))}
-          {houses.length === 0 && (
+         {filtered.length === 0 && (
             <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: 60, color: 'var(--text-muted)' }}>
               No houses yet. Click "Add House" to get started.
             </div>
