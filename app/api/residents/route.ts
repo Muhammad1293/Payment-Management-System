@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { house_id, name, email, phone, resident_type, floor_number = 1, monthly_charge } = body;
+    const { house_id, name, email, phone, resident_type, floor_number = 0, monthly_charge } = body;
 
     if (!house_id || !name || !resident_type || monthly_charge === undefined) {
       return badRequest('house_id, name, resident_type, monthly_charge are required');

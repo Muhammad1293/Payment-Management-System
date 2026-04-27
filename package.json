@@ -2,24 +2,23 @@
   "name": "pms-af-garden",
   "version": "0.1.0",
   "private": true,
-
   "scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "deploy": "next build && npx @opennextjs/cloudflare build && wrangler deploy",
-  "preview": "next build && npx @opennextjs/cloudflare build && wrangler dev",
-  "db:init": "wrangler d1 execute pms-af-garden-db --file=./schema.sql",
-  "db:seed": "wrangler d1 execute pms-af-garden-db --file=./seed.sql",
-  "generate-seed": "node scripts/generate-seed.js",
-  "lint": "next lint"
-},
-
+    "dev": "next dev",
+    "build": "next build",
+    "deploy": "next build && npx @opennextjs/cloudflare build && wrangler deploy",
+    "preview": "next build && npx @opennextjs/cloudflare build && wrangler dev",
+    "db:init": "wrangler d1 execute pms-af-garden-db --file=./schema.sql",
+    "db:seed": "wrangler d1 execute pms-af-garden-db --file=./seed.sql",
+    "generate-seed": "node scripts/generate-seed.js",
+    "lint": "next lint"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.2",
     "next": "^16.2.3",
     "react": "^18",
     "react-dom": "^18",
+    "react-select": "^5.10.2",
     "resend": "^6.10.0"
   },
   "devDependencies": {

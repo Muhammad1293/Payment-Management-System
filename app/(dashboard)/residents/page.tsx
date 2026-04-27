@@ -2,6 +2,7 @@
 // app/(dashboard)/residents/page.tsx
 import { useEffect, useState } from 'react';
 import { useToast } from '@/context/ToastContext';
+import Select from 'react-select';
 
 interface Resident {
   id: string; name: string; email: string; phone: string;
@@ -10,8 +11,12 @@ interface Resident {
   house_id: string; house_number: string;
 }
 
-interface House { id: string; house_number: string; num_floors: number; }
-
+interface House {
+  id: string;
+  house_number: string;
+  owner_name?: string;
+  num_floors: number;
+}
 export default function ResidentsPage() {
   const { toast }                   = useToast();
   const [residents, setResidents]   = useState<Resident[]>([]);
@@ -105,8 +110,10 @@ export default function ResidentsPage() {
                     <div style={{ fontWeight: 600 }}>{r.name}</div>
                     {r.email && <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{r.email}</div>}
                   </td>
-                  <td><span className="badge badge-blue">H-{r.house_number}</span></td>
-                  <td style={{ color: 'var(--text-secondary)' }}>Floor {r.floor_number}</td>
+                  <td><span className="badge badge-blue">{r.house_number}</span></td>
+                 <td style={{ color: 'var(--text-secondary)' }}>
+                                Floor {r.floor_number === 0 ? 'G' : r.floor_number}
+                                     </td>
                   <td>
                     <span className={`badge ${r.resident_type === 'owner' ? 'badge-gold' : 'badge-blue'}`}>
                       {r.resident_type}
@@ -161,8 +168,8 @@ function ResidentModal({ resident, houses, onClose, onSaved }: {
     email:          resident?.email          || '',
     phone:          resident?.phone          || '',
     resident_type:  resident?.resident_type  || 'tenant',
-    floor_number:   resident?.floor_number   || 1,
-    monthly_charge: resident?.monthly_charge || 0,
+    floor_number: resident?.floor_number ?? 0,
+    monthly_charge: resident?.monthly_charge ?? '',
     status:         resident?.status         || 'active',
   });
   const [saving, setSaving] = useState(false);
@@ -172,7 +179,12 @@ function ResidentModal({ resident, houses, onClose, onSaved }: {
   const selectedHouse = houses.find(h => h.id === form.house_id);
 
   const save = async () => {
-    if (!form.house_id || !form.name || !form.resident_type) { setError('House, name and type are required'); return; }
+    if (
+ !form.house_id ||
+ !form.name ||
+ !form.resident_type ||
+ form.monthly_charge === ''
+) { setError('House, name and type are required'); return; }
     setSaving(true); setError('');
     try {
       const url = resident ? `/api/residents/${resident.id}` : '/api/residents';
@@ -196,10 +208,75 @@ function ResidentModal({ resident, houses, onClose, onSaved }: {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
               <label className="label">House *</label>
-              <select className="input" value={form.house_id} onChange={e => set('house_id', e.target.value)}>
-                <option value="">Select house…</option>
-                {houses.map(h => <option key={h.id} value={h.id}>House {h.house_number}</option>)}
-              </select>
+              <Select
+  options={houses.map(h => ({
+    value: h.id,
+    label: `House ${h.house_number}${h.owner_name ? ` - ${h.owner_name}` : ''}`,
+  }))}
+
+  value={
+    houses.find(h => h.id === form.house_id)
+      ? {
+          value: form.house_id,
+          label: `House ${
+            houses.find(h => h.id === form.house_id)?.house_number
+          }${
+            houses.find(h => h.id === form.house_id)?.owner_name
+              ? ` - ${houses.find(h => h.id === form.house_id)?.owner_name}`
+              : ''
+          }`,
+        }
+      : null
+  }
+
+  onChange={(selected) => set('house_id', selected?.value || '')}
+
+  placeholder="Search house number or owner..."
+
+  isSearchable
+
+  styles={{
+    control: (base, state) => ({
+      ...base,
+      backgroundColor: 'var(--bg-elevated)',
+      borderColor: state.isFocused ? 'var(--accent)' : 'var(--border)',
+      color: 'var(--text-primary)',
+      boxShadow: 'none',
+      minHeight: 42,
+    }),
+
+    menu: (base) => ({
+      ...base,
+      backgroundColor: 'var(--bg-elevated)',
+      border: '1px solid var(--border)',
+      zIndex: 9999,
+    }),
+
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isFocused
+        ? 'rgba(99, 102, 241, 0.15)'
+        : 'transparent',
+      color: 'var(--text-primary)',
+      cursor: 'pointer',
+    }),
+
+    singleValue: (base) => ({
+      ...base,
+      color: 'var(--text-primary)',
+    }),
+
+    input: (base) => ({
+      ...base,
+      color: 'var(--text-primary)',
+    }),
+
+    placeholder: (base) => ({
+      ...base,
+      color: 'var(--text-muted)',
+    }),
+  }}
+/>
             </div>
             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
               <label className="label">Full Name *</label>
@@ -222,15 +299,34 @@ function ResidentModal({ resident, houses, onClose, onSaved }: {
             </div>
             <div className="form-group">
               <label className="label">Floor</label>
-              <select className="input" value={form.floor_number} onChange={e => set('floor_number', parseInt(e.target.value))}>
+              <select
+                   className="input"
+                  value={form.floor_number}
+                 onChange={e => set('floor_number', parseInt(e.target.value))}
+                      >
+                 <option value={0}>Floor G</option>
+
                 {Array.from({ length: selectedHouse?.num_floors || 4 }, (_, i) => (
-                  <option key={i + 1} value={i + 1}>Floor {i + 1}</option>
+               <option key={i + 1} value={i + 1}>
+                Floor {i + 1}
+                </option>
                 ))}
-              </select>
+            </select>
             </div>
             <div className="form-group">
               <label className="label">Monthly Charge (PKR) *</label>
-              <input type="number" className="input" value={form.monthly_charge} onChange={e => set('monthly_charge', parseFloat(e.target.value) || 0)} placeholder="0" />
+              <input
+              type="number"
+             className="input"
+              value={form.monthly_charge}
+              onChange={e =>
+              set(
+               'monthly_charge',
+                e.target.value === '' ? '' : parseFloat(e.target.value)
+                )
+               }
+               placeholder="Enter monthly charge"
+                  />
             </div>
             {resident && (
               <div className="form-group">

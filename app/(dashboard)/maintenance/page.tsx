@@ -2,6 +2,7 @@
 // app/(dashboard)/maintenance/page.tsx
 import { useEffect, useState } from 'react';
 import { useToast } from '@/context/ToastContext';
+import Select from 'react-select';
 
 const MONTHS = ['', 'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'];
@@ -112,14 +113,66 @@ export default function MaintenancePage() {
               <h3 style={{ fontSize: 14, fontWeight: 600, marginBottom: 14, color: 'var(--text-secondary)' }}>
                 STEP 1 — SELECT RESIDENT
               </h3>
-              <select className="input" value={selectedRes} onChange={e => setSelectedRes(e.target.value)}>
-                <option value="">Choose resident…</option>
-                {residents.map(r => (
-                  <option key={r.id} value={r.id}>
-                    {r.name} — House {r.house_number}, Floor {r.floor_number}
-                  </option>
-                ))}
-              </select>
+            <Select
+  options={residents.map(r => ({
+    value: r.id,
+    label: `${r.name} — House ${r.house_number}, Floor ${
+  r.floor_number === 0 ? 'G' : r.floor_number
+}`,
+  }))}
+
+  value={
+    residents.find(r => r.id === selectedRes)
+      ? {
+          value: selectedRes,
+           label: `${resident?.name} — House ${resident?.house_number}, Floor ${
+            resident?.floor_number === 0 ? 'G' : resident?.floor_number
+          }`,
+        }
+      : null
+  }
+
+  onChange={(selected) => setSelectedRes(selected?.value || '')}
+
+  placeholder="Search by resident name or house number..."
+  isSearchable
+
+  styles={{
+    control: (base, state) => ({
+      ...base,
+      backgroundColor: 'var(--bg-elevated)',
+      borderColor: state.isFocused ? 'var(--accent)' : 'var(--border)',
+      color: 'var(--text-primary)',
+      minHeight: 42,
+    }),
+    menu: (base) => ({
+      ...base,
+      backgroundColor: 'var(--bg-elevated)',
+      border: '1px solid var(--border)',
+      zIndex: 9999,
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isFocused
+        ? 'rgba(99, 102, 241, 0.15)'
+        : 'transparent',
+      color: 'var(--text-primary)',
+      cursor: 'pointer',
+    }),
+    singleValue: (base) => ({
+      ...base,
+      color: 'var(--text-primary)',
+    }),
+    input: (base) => ({
+      ...base,
+      color: 'var(--text-primary)',
+    }),
+    placeholder: (base) => ({
+      ...base,
+      color: 'var(--text-muted)',
+    }),
+  }}
+/>
 
               {resident && (
                 <div style={{ marginTop: 12, padding: '10px 14px', background: 'var(--bg-elevated)', borderRadius: 8, fontSize: 13 }}>
