@@ -203,12 +203,6 @@
       "namedRegex": "^/expenses(?:/)?$"
     },
     {
-      "page": "/favicon.ico",
-      "regex": "^/favicon\\.ico(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/favicon\\.ico(?:/)?$"
-    },
-    {
       "page": "/houses",
       "regex": "^/houses(?:/)?$",
       "routeKeys": {},
