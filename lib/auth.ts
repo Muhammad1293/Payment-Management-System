@@ -45,14 +45,18 @@ export function setAuthCookie(res: NextResponse, token: string): NextResponse {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    maxAge: 60 * 60 * 8,   // 8 hours
     path: '/',
   });
   return res;
 }
 
 export function clearAuthCookie(res: NextResponse): NextResponse {
-  res.cookies.set(COOKIE_NAME, '', { maxAge: 0, path: '/' });
+  res.cookies.set(COOKIE_NAME, '', {
+  maxAge: 0,
+  path: '/',
+  httpOnly: true,
+  sameSite: 'lax',
+});
   return res;
 }
 

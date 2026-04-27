@@ -22,6 +22,6 @@ export async function getCFEnv(): Promise<CFEnv> {
     JWT_SECRET:         env.JWT_SECRET         || 'dev-secret-key-minimum-32-characters!!',
     RESEND_API_KEY:     env.RESEND_API_KEY     || '',
     APP_URL:            env.APP_URL             || '',
-    RECEIPT_EMAIL_FROM: env.RECEIPT_EMAIL_FROM || 'noreply@afgarden.com',
+    RECEIPT_EMAIL_FROM: env.RECEIPT_EMAIL_FROM || 'afgardenwelfare@gmail.com',
   };
 }

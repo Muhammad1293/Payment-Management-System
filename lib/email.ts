@@ -106,7 +106,7 @@ export async function sendUserCredentials(payload: {
   .cred-box { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; margin: 16px 0; }
   .cred-box p { margin: 8px 0; font-size: 15px; }
   .value { font-weight: bold; color: #1e3a5f; font-size: 16px; }
-  .btn { display: inline-block; background: #1e3a5f; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; margin-top: 16px; }
+  .btn { display: inline-block; background: #1e3a5f; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; margin-top: 16px; }
   .footer { text-align: center; padding: 16px; font-size: 12px; color: #888; border-top: 1px solid #eee; margin-top: 24px; }
   .warning { background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 12px; margin-top: 16px; font-size: 13px; }
 </style>
@@ -162,7 +162,7 @@ export async function sendPasswordReset(payload: {
   .body { padding: 24px; }
   .cred-box { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; margin: 16px 0; }
   .value { font-weight: bold; color: #1e3a5f; font-size: 18px; letter-spacing: 1px; }
-  .btn { display: inline-block; background: #1e3a5f; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; margin-top: 16px; }
+  .btn { display: inline-block; background: #1e3a5f; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; margin-top: 16px; }
   .footer { text-align: center; padding: 16px; font-size: 12px; color: #888; border-top: 1px solid #eee; margin-top: 24px; }
   .warning { background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 12px; margin-top: 16px; font-size: 13px; }
 </style>
