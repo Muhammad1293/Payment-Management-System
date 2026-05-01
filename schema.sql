@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS residents (
   email                TEXT,
   phone                TEXT,
   resident_type        TEXT    NOT NULL CHECK (resident_type IN ('owner','tenant')),
-  floor_number         INTEGER NOT NULL DEFAULT 1,
+  floor_number         INTEGER,
   monthly_charge       REAL    NOT NULL DEFAULT 0,
   status               TEXT    NOT NULL DEFAULT 'active' CHECK (status IN ('active','inactive')),
   created_at           TEXT    NOT NULL DEFAULT (datetime('now')),

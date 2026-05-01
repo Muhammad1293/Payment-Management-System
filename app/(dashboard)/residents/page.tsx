@@ -168,7 +168,7 @@ function ResidentModal({ resident, houses, onClose, onSaved }: {
     email:          resident?.email          || '',
     phone:          resident?.phone          || '',
     resident_type:  resident?.resident_type  || 'tenant',
-    floor_number: resident?.floor_number ?? 0,
+    floor_number: resident?.floor_number ?? null,
     monthly_charge: resident?.monthly_charge ?? '',
     status:         resident?.status         || 'active',
   });
@@ -300,18 +300,27 @@ function ResidentModal({ resident, houses, onClose, onSaved }: {
             <div className="form-group">
               <label className="label">Floor</label>
               <select
-                   className="input"
-                  value={form.floor_number}
-                 onChange={e => set('floor_number', parseInt(e.target.value))}
-                      >
-                 <option value={0}>Floor G</option>
+  className="input"
+  value={form.floor_number ?? ''}
+  onChange={(e) =>
+    set(
+      'floor_number',
+      e.target.value === '' ? null : parseInt(e.target.value)
+    )
+  }
+>
+  <option value="">Select Floor</option>
+  <option value={0}>Floor G</option>
 
-                {Array.from({ length: selectedHouse?.num_floors || 4 }, (_, i) => (
-               <option key={i + 1} value={i + 1}>
-                Floor {i + 1}
-                </option>
-                ))}
-            </select>
+  {Array.from(
+    { length: selectedHouse?.num_floors || 4 },
+    (_, i) => (
+      <option key={i + 1} value={i + 1}>
+        Floor {i + 1}
+      </option>
+    )
+  )}
+</select>
             </div>
             <div className="form-group">
               <label className="label">Monthly Charge (PKR) *</label>
