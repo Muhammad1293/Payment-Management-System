@@ -13,7 +13,7 @@ node_modules/
 out/
 build/
 dist/
-open-next/
+.open-next/
 
 # =====================
 # Testing
